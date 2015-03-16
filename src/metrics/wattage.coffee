@@ -4,7 +4,7 @@ class Wattage
 
   @WATTAGE_REGEX: /^(\d+)[wW]?$/
 
-  # Using Concept2 formula, assumes 500m split if no distance givem
+  # Using Concept2 formula, assumes 500m split if no distance given
   # http://www.concept2.co.uk/indoor-rowers/training/calculators/watts-calculator
   @fromSplit: (split, distance=500) ->
 
