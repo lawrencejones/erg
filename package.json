@@ -1,6 +1,6 @@
 {
   "name": "erg",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Erg time calculator",
   "main": "bin/erg",
   "scripts": {
