@@ -14,13 +14,12 @@ erg
 
 erg
   .command('show <metrics...>')
-  .description 'generates split/duration/distance/wattage'
+  .description 'generates distance/duration/split/wattage'
   .action (metrics) ->
 
     logger.info 'Calculating metrics ...'
     console.log Metrics.parse(metrics).toTable()
     logger.info 'Done!'
 
-
 erg.parse(process.argv)
-erg.outputHelp() if process.argv.length < 2
+erg.outputHelp() if process.argv.length < 3
