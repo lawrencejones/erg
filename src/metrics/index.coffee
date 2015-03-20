@@ -41,7 +41,7 @@ class Metrics
     for metric in _.keys(Metrics.PARSERS)
       @[metric] = rawMetrics[metric]
 
-    @time ?= @split.clone().multiply(@distance.value / 500)
+    @time ?= @split.multiply(@distance.value / 500)
     @wattage ?= Wattage.fromSplit(@split)
 
   toTable: ->

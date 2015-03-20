@@ -1,11 +1,6 @@
 class Duration
 
   @DURATION_REGEX: /^(\d+:)?(\d+):(\d+)(\.\d+)?$/
-  @BASE: {
-    m: ['h', 60]
-    s: ['m', 60]
-    ms: ['s', 1000]
-  }
 
   # Expects <(hh):>?(mm):(ss)<.(ms)>?
   @fromString: (durationString='') =>
@@ -18,31 +13,23 @@ class Duration
     h = if h? then Number(h[..-2]) else 0
     ms = if ms? then Number("#{ms[1..]}000"[0..2]) else 0
 
-    new @(h, Number(m), Number(s), ms)
+    new @(3600 * h + 60 * Number(m) + Number(s) + ms / 1000)
 
-  constructor: (@h=0, @m=0, @s=0, @ms=0) ->
-    @rebase()
+  constructor: (@_s=0) ->
 
-  multiply: (n) ->
-    for key in ['h', 'm', 's', 'ms']
-      @[key] *= n
-    @rebase()
+  multiply: (n) -> new Duration(@_s * n)
 
-  rebase: ->
-    for key in ['ms', 's', 'm']
-      [nextKey, max] = Duration['BASE'][key]
-      if @[key] >= max
-        @[nextKey] += Math.floor(@[key] / max)
-        @[key] = @[key] % max
-    return @
-
-  toSeconds: ->
-    3600 * @h + 60 * @m + @s + @ms / 1000
+  toSeconds: -> @_s
 
   toString: ->
-    "#{@h}:#{@m}:#{('00' + @s).slice(-2)}.#{('000' + @ms).slice(-3)}"
+    "#{@hh}:#{@mm}:#{('00' + @ss).slice(-2)}.#{('000' + @ms).slice(-3)}"
       .replace(/^0:/, '')
 
-  clone: -> new Duration(@h, @m, @s, @ms)
+Object.defineProperties Duration.prototype, {
+  hh: get: -> Math.floor ( @_s / 3600 )
+  mm: get: -> Math.floor ( @_s % 3600 ) / 60
+  ss: get: -> Math.floor ( @_s % 60 )
+  ms: get: -> Math.floor ( 1000 * ( @_s % 1 ) )
+}
 
 module.exports = { Duration }
