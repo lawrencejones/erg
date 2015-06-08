@@ -11,13 +11,13 @@ class Metrics
     'split': (split) -> Duration.fromString(split)
     'wattage': (wattage) -> Wattage.fromString(wattage)
     'distance': (distance) -> Distance.fromString(distance)
-    'time': (time) -> Distance.fromString(time)
+    'duration': (duration) -> Duration.fromString(duration)
   }
 
   @DEPS: {
-    'split': ['distance', 'time']
-    'distance': ['time', 'split']
-    'time': ['distance', 'split']
+    'split': ['distance', 'duration']
+    'distance': ['duration', 'split']
+    'duration': ['distance', 'split']
   }
 
   @parse: (metricStrings = []) =>
@@ -41,15 +41,16 @@ class Metrics
     for metric in _.keys(Metrics.PARSERS)
       @[metric] = rawMetrics[metric]
 
-    @time ?= @split.multiply(@distance.value / 500)
+    @split ?= @duration.multiply(500 / @distance.value)
+    @duration ?= @split.multiply(@distance.value / 500)
     @wattage ?= Wattage.fromSplit(@split)
 
   toTable: ->
     table = new Table({
-      head: ['Distance', 'Time', 'Split', 'Wattage']
+      head: ['Distance', 'Duration', 'Split', 'Wattage']
       colWidths: [10, 20, 15, 15]
     })
-    table.push [ @distance, @time, @split, @wattage ]
+    table.push [ @distance, @duration, @split, @wattage ]
     table.toString()
 
 module.exports = { Metrics, Duration, Distance, Wattage }
